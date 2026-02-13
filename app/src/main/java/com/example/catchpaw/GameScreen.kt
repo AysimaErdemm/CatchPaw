@@ -1,8 +1,10 @@
 package com.example.catchpaw
 
+import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
@@ -11,6 +13,9 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -28,14 +33,12 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -49,6 +52,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
@@ -56,10 +60,9 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.catchpaw.ui.theme.GrassGreen
@@ -67,16 +70,20 @@ import com.example.catchpaw.ui.theme.PawOrange
 import com.example.catchpaw.ui.theme.ScoreGold
 import com.example.catchpaw.ui.theme.SkyBlue
 import com.example.catchpaw.ui.theme.TimerRed
+import com.example.catchpaw.viewmodel.GameViewModel
 import kotlinx.coroutines.delay
-import kotlin.math.roundToInt
 import kotlin.random.Random
 
 data class Mouse(
     val id: Int,
     val x: Float,
     val y: Float,
-    val emoji: String = listOf("🐭", "🐁").random()
+    val emoji: String = listOf("🐭", "🐁").random(),
+    val isDying: Boolean = false,
+    val dyingStartTime: Long = 0L
 )
+
+private const val MOUSE_FADE_OUT_MS = 700L
 
 data class PawEffect(
     val id: Int,
@@ -84,9 +91,12 @@ data class PawEffect(
     val y: Float
 )
 
-enum class GameState {
-    START, PLAYING, GAME_OVER
-}
+data class GrassLine(
+    val x: Float,
+    val heightRatio: Float,
+    val offsetX: Float,
+    val isDark: Boolean
+)
 
 private const val GAME_DURATION_MS = 30_000L
 private const val MOUSE_LIFETIME_MS = 1_500L
@@ -94,48 +104,17 @@ private const val MOUSE_SPAWN_INTERVAL_MS = 800L
 private const val MAX_MICE = 4
 
 @Composable
-fun CatchPawGame() {
-    var gameState by remember { mutableStateOf(GameState.START) }
-    var score by remember { mutableIntStateOf(0) }
-    var bestScore by remember { mutableIntStateOf(0) }
-    var missedCount by remember { mutableIntStateOf(0) }
+fun StartScreen(bestScore: Int, onStartGame: () -> Unit) {
+    val enterAlpha = remember { Animatable(0f) }
+    val enterOffset = remember { Animatable(40f) }
 
-    when (gameState) {
-        GameState.START -> StartScreen(
-            bestScore = bestScore,
-            onStartGame = {
-                score = 0
-                missedCount = 0
-                gameState = GameState.PLAYING
-            }
-        )
-        GameState.PLAYING -> PlayingScreen(
-            score = score,
-            onScoreChange = { score = it },
-            onMissed = { missedCount++ },
-            onGameOver = {
-                if (score > bestScore) bestScore = score
-                gameState = GameState.GAME_OVER
-            }
-        )
-        GameState.GAME_OVER -> GameOverScreen(
-            score = score,
-            bestScore = bestScore,
-            missedCount = missedCount,
-            onPlayAgain = {
-                score = 0
-                missedCount = 0
-                gameState = GameState.PLAYING
-            },
-            onMainMenu = {
-                gameState = GameState.START
-            }
-        )
+    LaunchedEffect(Unit) {
+        enterAlpha.animateTo(1f, tween(600, easing = FastOutSlowInEasing))
     }
-}
+    LaunchedEffect(Unit) {
+        enterOffset.animateTo(0f, tween(600, easing = FastOutSlowInEasing))
+    }
 
-@Composable
-private fun StartScreen(bestScore: Int, onStartGame: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -148,7 +127,12 @@ private fun StartScreen(bestScore: Int, onStartGame: () -> Unit) {
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .graphicsLayer {
+                    alpha = enterAlpha.value
+                    translationY = enterOffset.value
+                }
         ) {
             Text(
                 text = "🐱",
@@ -206,12 +190,14 @@ private fun StartScreen(bestScore: Int, onStartGame: () -> Unit) {
 }
 
 @Composable
-private fun PlayingScreen(
-    score: Int,
-    onScoreChange: (Int) -> Unit,
-    onMissed: () -> Unit,
+fun PlayingScreen(
+    viewModel: GameViewModel,
     onGameOver: () -> Unit
 ) {
+    BackHandler {
+        // Block back button during gameplay
+    }
+
     var timeLeftMs by remember { mutableLongStateOf(GAME_DURATION_MS) }
     val mice = remember { mutableStateListOf<Mouse>() }
     val pawEffects = remember { mutableStateListOf<PawEffect>() }
@@ -221,6 +207,8 @@ private fun PlayingScreen(
     var lastCatchTime by remember { mutableLongStateOf(0L) }
     var containerWidth by remember { mutableFloatStateOf(0f) }
     var containerHeight by remember { mutableFloatStateOf(0f) }
+
+    val score = viewModel.score
 
     // Timer
     LaunchedEffect(Unit) {
@@ -252,24 +240,35 @@ private fun PlayingScreen(
         }
     }
 
-    // Remove old mice
+    // Mark old mice as dying
     LaunchedEffect(Unit) {
         while (true) {
             delay(MOUSE_LIFETIME_MS)
-            if (mice.isNotEmpty()) {
-                val removed = mice.removeFirstOrNull()
-                if (removed != null) {
-                    onMissed()
+            val alive = mice.firstOrNull { !it.isDying }
+            if (alive != null) {
+                val index = mice.indexOf(alive)
+                if (index >= 0) {
+                    mice[index] = alive.copy(isDying = true, dyingStartTime = System.currentTimeMillis())
+                    viewModel.incrementMissed()
                     combo = 0
                 }
             }
         }
     }
 
+    // Remove mice after fade-out completes
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(50)
+            val now = System.currentTimeMillis()
+            mice.removeAll { it.isDying && now - it.dyingStartTime > MOUSE_FADE_OUT_MS }
+        }
+    }
+
     // Remove paw effects
     LaunchedEffect(Unit) {
         while (true) {
-            delay(400)
+            delay(500)
             if (pawEffects.isNotEmpty()) {
                 pawEffects.removeFirstOrNull()
             }
@@ -279,7 +278,7 @@ private fun PlayingScreen(
     val progress = timeLeftMs.toFloat() / GAME_DURATION_MS
     val animatedProgress by animateFloatAsState(
         targetValue = progress,
-        animationSpec = tween(100),
+        animationSpec = tween(200, easing = FastOutSlowInEasing),
         label = "timer"
     )
 
@@ -296,14 +295,30 @@ private fun PlayingScreen(
         containerWidth = with(density) { maxWidth.toPx() }
         containerHeight = with(density) { maxHeight.toPx() }
 
-        // Grass at the bottom
+        // Grass at the bottom (cached)
+        val grassLines = remember(containerWidth) {
+            if (containerWidth <= 0) emptyList()
+            else buildList {
+                for (i in 0..containerWidth.toInt() step 12) {
+                    add(
+                        GrassLine(
+                            x = i.toFloat(),
+                            heightRatio = Random.nextFloat() * 0.6f + 0.3f,
+                            offsetX = Random.nextFloat() * 6 - 3,
+                            isDark = Random.nextBoolean()
+                        )
+                    )
+                }
+            }
+        }
+
         Canvas(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(80.dp)
                 .align(Alignment.BottomCenter)
         ) {
-            drawGrass(size.width, size.height)
+            drawCachedGrass(grassLines, size.height)
         }
 
         // Top bar
@@ -329,39 +344,62 @@ private fun PlayingScreen(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text("🐾", fontSize = 24.sp)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = "$score",
-                            fontSize = 28.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = ScoreGold
-                        )
-                        if (combo > 1) {
-                            Spacer(modifier = Modifier.width(8.dp))
+                        AnimatedContent(
+                            targetState = score,
+                            transitionSpec = {
+                                (slideInVertically { -it } + fadeIn(tween(200)))
+                                    .togetherWith(slideOutVertically { it } + fadeOut(tween(150)))
+                            },
+                            label = "scoreAnim"
+                        ) { targetScore ->
                             Text(
-                                text = "x$combo",
-                                fontSize = 18.sp,
+                                text = "$targetScore",
+                                fontSize = 28.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = PawOrange
+                                color = ScoreGold
                             )
+                        }
+                        AnimatedVisibility(
+                            visible = combo > 1,
+                            enter = scaleIn(spring(dampingRatio = Spring.DampingRatioMediumBouncy)) + fadeIn(),
+                            exit = scaleOut(tween(150)) + fadeOut(tween(150))
+                        ) {
+                            Row {
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = "x$combo",
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = PawOrange
+                                )
+                            }
                         }
                     }
                     Row(verticalAlignment = Alignment.CenterVertically) {
+                        val timerColor by animateColorSafe(
+                            targetValue = if (timeLeftMs < 5000) TimerRed else Color(0xFF5D4037),
+                            animationSpec = tween(500)
+                        )
                         Text(
                             text = "${(timeLeftMs / 1000)}s",
                             fontSize = 22.sp,
                             fontWeight = FontWeight.Bold,
-                            color = if (timeLeftMs < 5000) TimerRed else Color(0xFF5D4037)
+                            color = timerColor
                         )
                     }
                 }
                 Spacer(modifier = Modifier.height(8.dp))
+                val progressBarColor by animateColorSafe(
+                    targetValue = if (timeLeftMs < 5000) TimerRed else GrassGreen,
+                    animationSpec = tween(500)
+                )
                 LinearProgressIndicator(
                     progress = { animatedProgress },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(8.dp)
                         .clip(RoundedCornerShape(4.dp)),
-                    color = if (timeLeftMs < 5000) TimerRed else GrassGreen,
+                    color = progressBarColor,
                     trackColor = Color(0xFFE0E0E0),
                     strokeCap = StrokeCap.Round
                 )
@@ -373,13 +411,15 @@ private fun PlayingScreen(
             MouseItem(
                 mouse = mouse,
                 onClick = {
-                    mice.remove(mouse)
-                    val now = System.currentTimeMillis()
-                    combo = if (now - lastCatchTime < 1200) combo + 1 else 1
-                    lastCatchTime = now
-                    val points = if (combo > 1) combo else 1
-                    onScoreChange(score + points)
-                    pawEffects.add(PawEffect(id = pawIdCounter++, x = mouse.x, y = mouse.y))
+                    if (!mouse.isDying) {
+                        mice.remove(mouse)
+                        val now = System.currentTimeMillis()
+                        combo = if (now - lastCatchTime < 1200) combo + 1 else 1
+                        lastCatchTime = now
+                        val points = if (combo > 1) combo else 1
+                        viewModel.addScore(points)
+                        pawEffects.add(PawEffect(id = pawIdCounter++, x = mouse.x, y = mouse.y))
+                    }
                 }
             )
         }
@@ -392,9 +432,26 @@ private fun PlayingScreen(
 }
 
 @Composable
+private fun animateColorSafe(
+    targetValue: Color,
+    animationSpec: androidx.compose.animation.core.AnimationSpec<Color> = tween(300)
+): androidx.compose.runtime.State<Color> {
+    return androidx.compose.animation.animateColorAsState(
+        targetValue = targetValue,
+        animationSpec = animationSpec,
+        label = "colorAnim"
+    )
+}
+
+@Composable
 private fun MouseItem(mouse: Mouse, onClick: () -> Unit) {
     val scale = remember { Animatable(0f) }
+    val alpha = remember { Animatable(0f) }
 
+    // Entrance animation
+    LaunchedEffect(mouse.id) {
+        alpha.animateTo(1f, tween(150))
+    }
     LaunchedEffect(mouse.id) {
         scale.animateTo(
             targetValue = 1f,
@@ -405,6 +462,18 @@ private fun MouseItem(mouse: Mouse, onClick: () -> Unit) {
         )
     }
 
+    // Dying fade-out + shrink animation
+    LaunchedEffect(mouse.isDying) {
+        if (mouse.isDying) {
+            scale.animateTo(0.3f, tween(MOUSE_FADE_OUT_MS.toInt(), easing = FastOutSlowInEasing))
+        }
+    }
+    LaunchedEffect(mouse.isDying) {
+        if (mouse.isDying) {
+            alpha.animateTo(0f, tween(MOUSE_FADE_OUT_MS.toInt(), easing = FastOutSlowInEasing))
+        }
+    }
+
     val density = LocalDensity.current
     val offsetX = with(density) { mouse.x.toDp() }
     val offsetY = with(density) { mouse.y.toDp() }
@@ -413,6 +482,7 @@ private fun MouseItem(mouse: Mouse, onClick: () -> Unit) {
         modifier = Modifier
             .offset(x = offsetX, y = offsetY)
             .scale(scale.value)
+            .alpha(alpha.value)
             .size(60.dp)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
@@ -434,11 +504,14 @@ private fun PawCatchEffect(paw: PawEffect) {
     val alpha = remember { Animatable(1f) }
 
     LaunchedEffect(paw.id) {
-        scale.animateTo(1.5f, animationSpec = tween(300, easing = LinearEasing))
+        scale.animateTo(
+            1.5f,
+            animationSpec = tween(350, easing = FastOutSlowInEasing)
+        )
     }
     LaunchedEffect(paw.id) {
-        delay(100)
-        alpha.animateTo(0f, animationSpec = tween(300))
+        delay(80)
+        alpha.animateTo(0f, animationSpec = tween(320, easing = FastOutSlowInEasing))
     }
 
     val density = LocalDensity.current
@@ -451,11 +524,12 @@ private fun PawCatchEffect(paw: PawEffect) {
         modifier = Modifier
             .offset(x = offsetX, y = offsetY)
             .scale(scale.value)
+            .alpha(alpha.value)
     )
 }
 
 @Composable
-private fun GameOverScreen(
+fun GameOverScreen(
     score: Int,
     bestScore: Int,
     missedCount: Int,
@@ -463,6 +537,18 @@ private fun GameOverScreen(
     onMainMenu: () -> Unit
 ) {
     val isNewBest = score == bestScore && score > 0
+    val cardScale = remember { Animatable(0.8f) }
+    val cardAlpha = remember { Animatable(0f) }
+
+    LaunchedEffect(Unit) {
+        cardAlpha.animateTo(1f, tween(400))
+    }
+    LaunchedEffect(Unit) {
+        cardScale.animateTo(
+            1f,
+            spring(dampingRatio = Spring.DampingRatioLowBouncy, stiffness = Spring.StiffnessMediumLow)
+        )
+    }
 
     Box(
         modifier = Modifier
@@ -481,7 +567,12 @@ private fun GameOverScreen(
         Card(
             modifier = Modifier
                 .padding(32.dp)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .graphicsLayer {
+                    scaleX = cardScale.value
+                    scaleY = cardScale.value
+                    this.alpha = cardAlpha.value
+                },
             colors = CardDefaults.cardColors(
                 containerColor = Color.White.copy(alpha = 0.95f)
             ),
@@ -572,16 +663,16 @@ private fun GameOverScreen(
     }
 }
 
-private fun DrawScope.drawGrass(width: Float, height: Float) {
+private fun DrawScope.drawCachedGrass(grassLines: List<GrassLine>, height: Float) {
     val grassColor = GrassGreen
     val darkGrass = Color(0xFF558B2F)
-    for (i in 0..width.toInt() step 12) {
-        val h = Random.nextFloat() * height * 0.6f + height * 0.3f
-        val color = if (Random.nextBoolean()) grassColor else darkGrass
+    for (line in grassLines) {
+        val h = line.heightRatio * height
+        val color = if (line.isDark) darkGrass else grassColor
         drawLine(
             color = color,
-            start = Offset(i.toFloat(), height),
-            end = Offset(i.toFloat() + Random.nextFloat() * 6 - 3, height - h),
+            start = Offset(line.x, height),
+            end = Offset(line.x + line.offsetX, height - h),
             strokeWidth = 3f
         )
     }
