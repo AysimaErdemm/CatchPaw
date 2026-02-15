@@ -1,7 +1,10 @@
 package com.example.catchpaw.navigation
 
-object Routes {
-    const val START = "start"
-    const val PLAYING = "playing"
-    const val GAME_OVER = "game_over"
+sealed class Screen(val route: String) {
+    data object Start : Screen("start")
+    data object Playing : Screen("playing")
+    data object GameOver : Screen("game_over/{score}/{bestScore}/{missedCount}/{maxCombo}") {
+        fun createRoute(score: Int, bestScore: Int, missedCount: Int, maxCombo: Int): String =
+            "game_over/$score/$bestScore/$missedCount/$maxCombo"
+    }
 }

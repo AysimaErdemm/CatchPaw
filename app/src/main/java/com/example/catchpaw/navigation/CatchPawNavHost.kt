@@ -1,27 +1,28 @@
 package com.example.catchpaw.navigation
 
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
-import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.catchpaw.GameOverScreen
-import com.example.catchpaw.PlayingScreen
-import com.example.catchpaw.StartScreen
-import com.example.catchpaw.viewmodel.GameViewModel
+import androidx.navigation.navArgument
+import com.example.catchpaw.ui.screen.gameover.GameOverScreen
+import com.example.catchpaw.ui.screen.playing.PlayingScreen
+import com.example.catchpaw.ui.screen.start.StartScreen
 
 @Composable
-fun CatchPawNavHost(
-    navController: NavHostController,
-    viewModel: GameViewModel
-) {
+fun CatchPawNavHost(navController: NavHostController) {
+    val navigator = remember(navController) { CatchPawNavigator(navController) }
+
     NavHost(
         navController = navController,
-        startDestination = Routes.START,
+        startDestination = Screen.Start.route,
         enterTransition = {
             fadeIn(tween(400)) + scaleIn(tween(400), initialScale = 0.92f)
         },
@@ -29,45 +30,45 @@ fun CatchPawNavHost(
             fadeOut(tween(300)) + scaleOut(tween(300), targetScale = 1.05f)
         }
     ) {
-        composable(Routes.START) {
+        composable(Screen.Start.route) {
             StartScreen(
-                bestScore = viewModel.bestScore,
                 onStartGame = {
-                    viewModel.resetForNewGame()
-                    navController.navigate(Routes.PLAYING) {
-                        popUpTo(Routes.START) { inclusive = true }
-                    }
+                    navigator.navigateTo(Screen.Playing)
                 }
             )
         }
 
-        composable(Routes.PLAYING) {
+        composable(Screen.Playing.route) {
             PlayingScreen(
-                viewModel = viewModel,
-                onGameOver = {
-                    viewModel.onGameOver()
-                    navController.navigate(Routes.GAME_OVER) {
-                        popUpTo(Routes.START) { inclusive = true }
-                    }
-                }
-            )
-        }
-
-        composable(Routes.GAME_OVER) {
-            GameOverScreen(
-                score = viewModel.score,
-                bestScore = viewModel.bestScore,
-                missedCount = viewModel.missedCount,
-                onPlayAgain = {
-                    viewModel.resetForNewGame()
-                    navController.navigate(Routes.PLAYING) {
-                        popUpTo(Routes.START) { inclusive = true }
-                    }
+                onGameOver = { result ->
+                    navigator.navigateToGameOver(
+                        score = result.score,
+                        bestScore = result.bestScore,
+                        missedCount = result.missedCount,
+                        maxCombo = result.maxCombo
+                    )
                 },
                 onMainMenu = {
-                    navController.navigate(Routes.START) {
-                        popUpTo(0) { inclusive = true }
-                    }
+                    navigator.navigateTo(Screen.Start)
+                }
+            )
+        }
+
+        composable(
+            route = Screen.GameOver.route,
+            arguments = listOf(
+                navArgument("score") { type = NavType.IntType },
+                navArgument("bestScore") { type = NavType.IntType },
+                navArgument("missedCount") { type = NavType.IntType },
+                navArgument("maxCombo") { type = NavType.IntType }
+            )
+        ) {
+            GameOverScreen(
+                onPlayAgain = {
+                    navigator.navigateTo(Screen.Playing)
+                },
+                onMainMenu = {
+                    navigator.navigateTo(Screen.Start)
                 }
             )
         }
