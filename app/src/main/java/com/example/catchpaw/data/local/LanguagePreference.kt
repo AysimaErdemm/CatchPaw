@@ -10,10 +10,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
 
-enum class AppLanguage(val tag: String, val label: String) {
-    SYSTEM("", ""),
-    TURKISH("tr", ""),
-    ENGLISH("en", "")
+enum class AppLanguage(val tag: String) {
+    TURKISH("tr"),
+    ENGLISH("en")
 }
 
 @Singleton
@@ -27,21 +26,16 @@ class LanguagePreference @Inject constructor(
 
     private fun getCurrentLanguage(): AppLanguage {
         val appLocales = localeManager.applicationLocales
-        if (appLocales.isEmpty) return AppLanguage.SYSTEM
-        val tag = appLocales.get(0)?.language ?: return AppLanguage.SYSTEM
+        if (appLocales.isEmpty) return AppLanguage.TURKISH
+        val tag = appLocales.get(0)?.language ?: return AppLanguage.TURKISH
         return when (tag) {
-            "tr" -> AppLanguage.TURKISH
             "en" -> AppLanguage.ENGLISH
-            else -> AppLanguage.SYSTEM
+            else -> AppLanguage.TURKISH
         }
     }
 
     fun setLanguage(lang: AppLanguage) {
-        if (lang == AppLanguage.SYSTEM) {
-            localeManager.applicationLocales = LocaleList.getEmptyLocaleList()
-        } else {
-            localeManager.applicationLocales = LocaleList.forLanguageTags(lang.tag)
-        }
+        localeManager.applicationLocales = LocaleList.forLanguageTags(lang.tag)
         _language.value = lang
     }
 }

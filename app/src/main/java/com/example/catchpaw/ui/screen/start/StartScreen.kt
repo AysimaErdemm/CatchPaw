@@ -33,6 +33,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -114,7 +115,9 @@ fun StartScreen(
             Text(
                 text = stringResource(R.string.start_subtitle),
                 fontSize = 16.sp,
-                color = colors.textSecondary
+                color = colors.textSecondary,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(horizontal = 32.dp)
             )
             if (uiState.bestScore > 0) {
                 Spacer(modifier = Modifier.height(12.dp))
@@ -141,14 +144,6 @@ fun StartScreen(
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold
                 )
-            }
-            Spacer(modifier = Modifier.height(48.dp))
-            Row {
-                Text("🐁", fontSize = 28.sp)
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("🐁", fontSize = 20.sp)
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("🐁", fontSize = 24.sp)
             }
         }
 

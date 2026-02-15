@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
 
-enum class ThemeMode { SYSTEM, LIGHT, DARK }
+enum class ThemeMode { LIGHT, DARK }
 
 @Singleton
 class ThemePreference @Inject constructor(

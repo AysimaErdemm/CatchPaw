@@ -28,7 +28,7 @@ fun BannerAd(
                     }
                 )
                 // Test ad unit ID — replace with real ID before publishing
-                adUnitId = "ca-app-pub-3940256099942544/6300978111"
+                adUnitId = "ca-app-pub-7822462492263316/5547706965"
                 loadAd(AdRequest.Builder().build())
             }
         }

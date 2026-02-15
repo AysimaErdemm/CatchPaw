@@ -19,6 +19,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -161,11 +162,8 @@ fun GameOverScreen(
                     )
                 }
                 Spacer(modifier = Modifier.height(12.dp))
-                Button(
+                OutlinedButton(
                     onClick = onMainMenu,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = colors.buttonSecondary
-                    ),
                     shape = RoundedCornerShape(24.dp),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -174,7 +172,8 @@ fun GameOverScreen(
                     Text(
                         text = stringResource(R.string.gameover_main_menu),
                         fontSize = 16.sp,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.SemiBold,
+                        color = colors.textSecondary
                     )
                 }
             }
