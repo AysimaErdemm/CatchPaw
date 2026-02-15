@@ -31,15 +31,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.catchpaw.R
 import com.example.catchpaw.ui.component.BannerAd
+import com.example.catchpaw.ui.component.LanguageSelector
 import com.example.catchpaw.ui.component.ThemeSelector
 import com.example.catchpaw.ui.theme.LocalCatchPawColors
+import com.example.catchpaw.ui.theme.LocalLanguagePreference
 import com.example.catchpaw.ui.theme.LocalThemePreference
 
 @Composable
@@ -50,7 +54,9 @@ fun StartScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val colors = LocalCatchPawColors.current
     val themePref = LocalThemePreference.current
+    val langPref = LocalLanguagePreference.current
     val currentThemeMode by themePref!!.themeMode.collectAsStateWithLifecycle()
+    val currentLanguage by langPref!!.language.collectAsStateWithLifecycle()
     var showSettings by remember { mutableStateOf(false) }
 
     val enterAlpha = remember { Animatable(0f) }
@@ -72,7 +78,6 @@ fun StartScreen(
                 )
             )
     ) {
-        // Settings button - top right
         IconButton(
             onClick = { showSettings = true },
             modifier = Modifier
@@ -100,21 +105,21 @@ fun StartScreen(
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "Patileri Yakala!",
+                text = stringResource(R.string.start_title),
                 fontSize = 36.sp,
                 fontWeight = FontWeight.Bold,
                 color = colors.textPrimary
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "Farelere dokun, puan topla!",
+                text = stringResource(R.string.start_subtitle),
                 fontSize = 16.sp,
                 color = colors.textSecondary
             )
             if (uiState.bestScore > 0) {
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(
-                    text = "En Yuksek Skor: ${uiState.bestScore}",
+                    text = stringResource(R.string.start_best_score, uiState.bestScore),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = colors.scoreGold
@@ -132,7 +137,7 @@ fun StartScreen(
                     .height(56.dp)
             ) {
                 Text(
-                    text = "🐾  Oyna!",
+                    text = stringResource(R.string.start_play),
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -153,7 +158,6 @@ fun StartScreen(
         )
     }
 
-    // Settings dialog
     if (showSettings) {
         Dialog(onDismissRequest = { showSettings = false }) {
             Card(
@@ -166,14 +170,14 @@ fun StartScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "⚙️ Ayarlar",
+                        text = stringResource(R.string.settings_title),
                         fontSize = 22.sp,
                         fontWeight = FontWeight.Bold,
                         color = colors.textPrimary
                     )
                     Spacer(modifier = Modifier.height(20.dp))
                     Text(
-                        text = "Tema",
+                        text = stringResource(R.string.settings_theme),
                         fontSize = 15.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = colors.textSecondary
@@ -184,13 +188,25 @@ fun StartScreen(
                         onModeSelected = { themePref.setThemeMode(it) }
                     )
                     Spacer(modifier = Modifier.height(20.dp))
+                    Text(
+                        text = stringResource(R.string.settings_language),
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = colors.textSecondary
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    LanguageSelector(
+                        currentLanguage = currentLanguage,
+                        onLanguageSelected = { langPref.setLanguage(it) }
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
                     Button(
                         onClick = { showSettings = false },
                         colors = ButtonDefaults.buttonColors(containerColor = colors.pawOrange),
                         shape = RoundedCornerShape(16.dp)
                     ) {
                         Text(
-                            text = "Tamam",
+                            text = stringResource(R.string.settings_ok),
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold
                         )

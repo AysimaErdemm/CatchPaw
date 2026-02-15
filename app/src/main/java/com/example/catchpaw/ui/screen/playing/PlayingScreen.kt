@@ -40,18 +40,22 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.catchpaw.R
 import com.example.catchpaw.domain.model.GameResult
 import com.example.catchpaw.ui.component.GameTopBar
 import com.example.catchpaw.ui.component.GrassBackground
 import com.example.catchpaw.ui.component.MouseItem
 import com.example.catchpaw.ui.component.PawCatchEffect
+import com.example.catchpaw.ui.component.LanguageSelector
 import com.example.catchpaw.ui.component.ThemeSelector
 import com.example.catchpaw.ui.theme.LocalCatchPawColors
+import com.example.catchpaw.ui.theme.LocalLanguagePreference
 import com.example.catchpaw.ui.theme.LocalThemePreference
 
 @Composable
@@ -67,7 +71,9 @@ fun PlayingScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val colors = LocalCatchPawColors.current
     val themePref = LocalThemePreference.current
+    val langPref = LocalLanguagePreference.current
     val currentThemeMode by themePref!!.themeMode.collectAsStateWithLifecycle()
+    val currentLanguage by langPref!!.language.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
@@ -167,14 +173,14 @@ fun PlayingScreen(
                             Text(text = "🐱", fontSize = 48.sp)
                             Spacer(modifier = Modifier.height(12.dp))
                             Text(
-                                text = "Oyun Duraklatildi",
+                                text = stringResource(R.string.pause_title),
                                 fontSize = 22.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = colors.textPrimary
                             )
                             Spacer(modifier = Modifier.height(6.dp))
                             Text(
-                                text = "Skor: ${uiState.score}",
+                                text = stringResource(R.string.pause_score, uiState.score),
                                 fontSize = 16.sp,
                                 color = colors.textSecondary
                             )
@@ -183,7 +189,7 @@ fun PlayingScreen(
                             Spacer(modifier = Modifier.height(16.dp))
 
                             Text(
-                                text = "Tema",
+                                text = stringResource(R.string.settings_theme),
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.SemiBold,
                                 color = colors.textSecondary
@@ -192,6 +198,18 @@ fun PlayingScreen(
                             ThemeSelector(
                                 currentMode = currentThemeMode,
                                 onModeSelected = { themePref.setThemeMode(it) }
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Text(
+                                text = stringResource(R.string.settings_language),
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = colors.textSecondary
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            LanguageSelector(
+                                currentLanguage = currentLanguage,
+                                onLanguageSelected = { langPref.setLanguage(it) }
                             )
                             Spacer(modifier = Modifier.height(16.dp))
 
@@ -204,7 +222,7 @@ fun PlayingScreen(
                                     .height(50.dp)
                             ) {
                                 Text(
-                                    text = "Devam Et",
+                                    text = stringResource(R.string.pause_resume),
                                     fontSize = 17.sp,
                                     fontWeight = FontWeight.Bold
                                 )
@@ -218,7 +236,7 @@ fun PlayingScreen(
                                     .height(50.dp)
                             ) {
                                 Text(
-                                    text = "Yeniden Basla",
+                                    text = stringResource(R.string.pause_restart),
                                     fontSize = 15.sp,
                                     fontWeight = FontWeight.SemiBold,
                                     color = colors.textSecondary
@@ -233,7 +251,7 @@ fun PlayingScreen(
                                     .height(50.dp)
                             ) {
                                 Text(
-                                    text = "Ana Menu",
+                                    text = stringResource(R.string.pause_main_menu),
                                     fontSize = 15.sp,
                                     fontWeight = FontWeight.SemiBold,
                                     color = colors.textSecondary

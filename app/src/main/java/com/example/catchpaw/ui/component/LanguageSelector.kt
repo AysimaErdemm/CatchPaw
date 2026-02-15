@@ -14,35 +14,35 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.catchpaw.R
-import com.example.catchpaw.data.local.ThemeMode
+import com.example.catchpaw.data.local.AppLanguage
 import com.example.catchpaw.ui.theme.LocalCatchPawColors
 
 @Composable
-fun ThemeSelector(
-    currentMode: ThemeMode,
-    onModeSelected: (ThemeMode) -> Unit,
+fun LanguageSelector(
+    currentLanguage: AppLanguage,
+    onLanguageSelected: (AppLanguage) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val colors = LocalCatchPawColors.current
     val options = listOf(
-        ThemeMode.SYSTEM to stringResource(R.string.theme_system),
-        ThemeMode.LIGHT to stringResource(R.string.theme_light),
-        ThemeMode.DARK to stringResource(R.string.theme_dark)
+        AppLanguage.SYSTEM to stringResource(R.string.lang_system),
+        AppLanguage.TURKISH to stringResource(R.string.lang_turkish),
+        AppLanguage.ENGLISH to stringResource(R.string.lang_english)
     )
 
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        options.forEach { (mode, label) ->
+        options.forEach { (lang, label) ->
             FilterChip(
-                selected = currentMode == mode,
-                onClick = { onModeSelected(mode) },
+                selected = currentLanguage == lang,
+                onClick = { onLanguageSelected(lang) },
                 label = {
                     Text(
                         text = label,
                         fontSize = 13.sp,
-                        fontWeight = if (currentMode == mode) FontWeight.Bold else FontWeight.Normal
+                        fontWeight = if (currentLanguage == lang) FontWeight.Bold else FontWeight.Normal
                     )
                 },
                 shape = RoundedCornerShape(12.dp),

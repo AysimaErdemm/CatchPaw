@@ -15,10 +15,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
+import com.example.catchpaw.data.local.LanguagePreference
 import com.example.catchpaw.data.local.ThemeMode
 import com.example.catchpaw.data.local.ThemePreference
 import com.example.catchpaw.navigation.CatchPawNavHost
 import com.example.catchpaw.ui.theme.CatchPawTheme
+import com.example.catchpaw.ui.theme.LocalLanguagePreference
 import com.example.catchpaw.ui.theme.LocalThemePreference
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -28,6 +30,9 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var themePreference: ThemePreference
+
+    @Inject
+    lateinit var languagePreference: LanguagePreference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +45,10 @@ class MainActivity : ComponentActivity() {
                 ThemeMode.DARK -> true
             }
 
-            CompositionLocalProvider(LocalThemePreference provides themePreference) {
+            CompositionLocalProvider(
+                LocalThemePreference provides themePreference,
+                LocalLanguagePreference provides languagePreference
+            ) {
                 CatchPawTheme(darkTheme = isDark) {
                     Surface(
                         modifier = Modifier

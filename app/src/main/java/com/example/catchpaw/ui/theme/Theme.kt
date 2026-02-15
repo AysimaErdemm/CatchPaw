@@ -69,6 +69,7 @@ val DarkCatchPawColors = CatchPawColors(
 
 val LocalCatchPawColors = staticCompositionLocalOf { LightCatchPawColors }
 val LocalThemePreference = staticCompositionLocalOf<com.example.catchpaw.data.local.ThemePreference?> { null }
+val LocalLanguagePreference = staticCompositionLocalOf<com.example.catchpaw.data.local.LanguagePreference?> { null }
 
 private val DarkColorScheme = darkColorScheme(
     primary = Orange80,

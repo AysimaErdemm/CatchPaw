@@ -28,11 +28,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.catchpaw.R
 import com.example.catchpaw.ui.component.BannerAd
 import com.example.catchpaw.ui.theme.LocalCatchPawColors
 
@@ -97,7 +99,7 @@ fun GameOverScreen(
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = if (uiState.isNewBest) "Yeni Rekor!" else "Süre Doldu!",
+                    text = if (uiState.isNewBest) stringResource(R.string.gameover_new_record) else stringResource(R.string.gameover_time_up),
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold,
                     color = if (uiState.isNewBest) colors.scoreGold else colors.textPrimary
@@ -110,7 +112,7 @@ fun GameOverScreen(
                     Text("🐾", fontSize = 28.sp)
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "${uiState.score} puan",
+                        text = stringResource(R.string.gameover_score, uiState.score),
                         fontSize = 32.sp,
                         fontWeight = FontWeight.Bold,
                         color = colors.scoreGold
@@ -119,7 +121,7 @@ fun GameOverScreen(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = "Kacirilan: ${uiState.missedCount} 🐁",
+                    text = stringResource(R.string.gameover_missed, uiState.missedCount),
                     fontSize = 16.sp,
                     color = colors.textSecondary
                 )
@@ -127,7 +129,7 @@ fun GameOverScreen(
                 if (uiState.maxCombo > 1) {
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "En Yuksek Kombo: ${uiState.maxCombo}",
+                        text = stringResource(R.string.gameover_best_combo, uiState.maxCombo),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = colors.pawOrange
@@ -136,7 +138,7 @@ fun GameOverScreen(
 
                 if (!uiState.isNewBest && uiState.bestScore > 0) {
                     Text(
-                        text = "En iyi: ${uiState.bestScore}",
+                        text = stringResource(R.string.gameover_best_score, uiState.bestScore),
                         fontSize = 16.sp,
                         color = colors.textSecondary
                     )
@@ -153,7 +155,7 @@ fun GameOverScreen(
                         .height(52.dp)
                 ) {
                     Text(
-                        text = "🐾  Tekrar Oyna",
+                        text = stringResource(R.string.gameover_play_again),
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -170,7 +172,7 @@ fun GameOverScreen(
                         .height(48.dp)
                 ) {
                     Text(
-                        text = "Ana Menü",
+                        text = stringResource(R.string.gameover_main_menu),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold
                     )

@@ -1,0 +1,39 @@
+<resources>
+    <string name="app_name">Paw Catch</string>
+
+    <!-- Start Screen -->
+    <string name="start_title">Catch the Mice</string>
+    <string name="start_subtitle">Help Sade and Mia catch the escaping mice.</string>
+    <string name="start_best_score">Best Score: %d</string>
+    <string name="start_play">🐾  Play!</string>
+
+    <!-- Settings -->
+    <string name="settings_title">⚙️ Settings</string>
+    <string name="settings_theme">Theme</string>
+    <string name="settings_language">Language</string>
+    <string name="settings_ok">OK</string>
+    <string name="lang_system">System</string>
+    <string name="lang_turkish">Türkçe</string>
+    <string name="lang_english">English</string>
+    <string name="theme_system">System</string>
+    <string name="theme_light">☀️ Light</string>
+    <string name="theme_dark">🌙 Dark</string>
+
+    <!-- Playing Screen -->
+    <string name="pause_title">Game Paused</string>
+    <string name="pause_score">Score: %d</string>
+    <string name="pause_resume">Resume</string>
+    <string name="pause_restart">Restart</string>
+    <string name="pause_main_menu">Main Menu</string>
+    <string name="combo_label">Combo: %d</string>
+
+    <!-- Game Over Screen -->
+    <string name="gameover_new_record">New Record!</string>
+    <string name="gameover_time_up">Time\'s Up!</string>
+    <string name="gameover_score">%d points</string>
+    <string name="gameover_missed">Missed: %d 🐁</string>
+    <string name="gameover_best_combo">Best Combo: %d</string>
+    <string name="gameover_best_score">Best: %d</string>
+    <string name="gameover_play_again">🐾  Play Again</string>
+    <string name="gameover_main_menu">Main Menu</string>
+</resources>

@@ -36,9 +36,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.catchpaw.R
 import com.example.catchpaw.domain.model.GameConfig
 import com.example.catchpaw.ui.theme.LocalCatchPawColors
 
@@ -102,7 +104,7 @@ fun GameTopBar(
                         Row {
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                text = "Kombo: $combo",
+                                text = stringResource(R.string.combo_label, combo),
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = colors.pawOrange
