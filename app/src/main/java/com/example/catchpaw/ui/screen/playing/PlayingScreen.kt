@@ -50,6 +50,8 @@ import com.example.catchpaw.R
 import com.example.catchpaw.domain.model.GameResult
 import com.example.catchpaw.ui.component.GameTopBar
 import com.example.catchpaw.ui.component.GrassBackground
+import com.example.catchpaw.ui.component.BombItem
+import com.example.catchpaw.ui.component.ExplosionEffect
 import com.example.catchpaw.ui.component.MouseItem
 import com.example.catchpaw.ui.component.PawCatchEffect
 import com.example.catchpaw.ui.component.LanguageSelector
@@ -128,8 +130,21 @@ fun PlayingScreen(
                 )
             }
 
+            uiState.bombs.forEach { bomb ->
+                BombItem(
+                    bomb = bomb,
+                    onClick = {
+                        viewModel.onAction(PlayingAction.BombClicked(bomb.id))
+                    }
+                )
+            }
+
             uiState.pawEffects.forEach { paw ->
                 PawCatchEffect(paw = paw)
+            }
+
+            uiState.explosionEffects.forEach { explosion ->
+                ExplosionEffect(explosion = explosion)
             }
         }
 

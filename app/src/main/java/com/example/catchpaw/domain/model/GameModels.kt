@@ -30,12 +30,30 @@ data class GameResult(
     val isNewBest: Boolean
 )
 
+data class Bomb(
+    val id: Int,
+    val x: Float,
+    val y: Float,
+    val isDying: Boolean = false,
+    val dyingStartTime: Long = 0L
+)
+
+data class ExplosionEffect(
+    val id: Int,
+    val x: Float,
+    val y: Float
+)
+
 object GameConfig {
     const val GAME_DURATION_MS = 60_000L
     const val MOUSE_FADE_OUT_MS = 700L
     const val COMBO_WINDOW_MS = 3_000L
     const val MOUSE_SIZE = 60f
     const val TOP_BAR_HEIGHT = 120f
+
+    const val BOMB_PENALTY_MS = 5_000L
+    const val BOMB_SPAWN_CHANCE = 0.25f
+    const val BOMB_LIFETIME_MS = 2_500L
 
     // Difficulty progression — values lerp from EASY → HARD as score reaches DIFFICULTY_SCORE_CAP
     const val DIFFICULTY_SCORE_CAP = 30

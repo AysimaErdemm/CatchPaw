@@ -10,8 +10,10 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.example.catchpaw.data.local.LanguagePreference
@@ -41,6 +43,13 @@ class MainActivity : ComponentActivity() {
             val isDark = when (themeMode) {
                 ThemeMode.LIGHT -> false
                 ThemeMode.DARK -> true
+            }
+
+            val statusBarColor = if (isDark) android.graphics.Color.parseColor("#2A2220")
+                else android.graphics.Color.parseColor("#FDF9F6")
+
+            SideEffect {
+                window.statusBarColor = statusBarColor
             }
 
             CompositionLocalProvider(

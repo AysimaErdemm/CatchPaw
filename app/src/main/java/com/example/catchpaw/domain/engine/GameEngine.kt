@@ -1,5 +1,6 @@
 package com.example.catchpaw.domain.engine
 
+import com.example.catchpaw.domain.model.Bomb
 import com.example.catchpaw.domain.model.GameConfig
 import com.example.catchpaw.domain.model.GameResult
 import com.example.catchpaw.domain.model.Mouse
@@ -19,6 +20,7 @@ class GameEngine {
         private set
 
     private var mouseIdCounter: Int = 0
+    private var bombIdCounter: Int = 0
 
     /** 0 → 1 progress based on current score */
     fun difficultyProgress(): Float =
@@ -65,6 +67,21 @@ class GameEngine {
         return (GameConfig.EASY_MAX_MICE + p * (GameConfig.HARD_MAX_MICE - GameConfig.EASY_MAX_MICE)).toInt()
     }
 
+    fun createBomb(containerWidth: Float, containerHeight: Float, topBarHeightPx: Float = GameConfig.TOP_BAR_HEIGHT): Bomb {
+        val size = GameConfig.MOUSE_SIZE
+        return Bomb(
+            id = bombIdCounter++,
+            x = Random.nextFloat() * (containerWidth - size * 2) + size / 2,
+            y = topBarHeightPx + Random.nextFloat() * (containerHeight - topBarHeightPx - size * 2)
+        )
+    }
+
+    fun onBombClicked() {
+        combo = 0
+    }
+
+    fun shouldSpawnBomb(): Boolean = Random.nextFloat() < GameConfig.BOMB_SPAWN_CHANCE
+
     fun buildGameResult(bestScore: Int): GameResult {
         val newBest = score > bestScore
         val finalBest = if (newBest) score else bestScore
@@ -84,6 +101,7 @@ class GameEngine {
         maxCombo = 0
         lastCatchTime = 0L
         mouseIdCounter = 0
+        bombIdCounter = 0
     }
 
     private fun lerp(start: Long, end: Long, fraction: Float): Long =
