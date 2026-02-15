@@ -1,4 +1,4 @@
-package com.example.catchpaw.domain.repository
+package com.catchpaw.domain.repository
 
 import kotlinx.coroutines.flow.Flow
 

@@ -1,4 +1,4 @@
-package com.example.catchpaw.ui.screen.start
+package com.catchpaw.ui.screen.start
 
 data class StartUiState(
     val bestScore: Int = 0,

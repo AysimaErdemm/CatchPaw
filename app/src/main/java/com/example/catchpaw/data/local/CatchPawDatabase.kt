@@ -1,4 +1,4 @@
-package com.example.catchpaw.data.local
+package com.catchpaw.data.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

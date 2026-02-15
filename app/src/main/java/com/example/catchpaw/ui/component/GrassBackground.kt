@@ -1,4 +1,4 @@
-package com.example.catchpaw.ui.component
+package com.catchpaw.ui.component
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,8 +10,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.unit.dp
-import com.example.catchpaw.domain.model.GrassLine
-import com.example.catchpaw.ui.theme.LocalCatchPawColors
+import com.catchpaw.domain.model.GrassLine
+import com.catchpaw.ui.theme.LocalCatchPawColors
 import kotlin.random.Random
 
 @Composable

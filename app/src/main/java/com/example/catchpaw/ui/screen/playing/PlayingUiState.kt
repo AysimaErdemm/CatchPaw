@@ -1,9 +1,9 @@
-package com.example.catchpaw.ui.screen.playing
+package com.catchpaw.ui.screen.playing
 
-import com.example.catchpaw.domain.model.Bomb
-import com.example.catchpaw.domain.model.ExplosionEffect
-import com.example.catchpaw.domain.model.Mouse
-import com.example.catchpaw.domain.model.PawEffect
+import com.catchpaw.domain.model.Bomb
+import com.catchpaw.domain.model.ExplosionEffect
+import com.catchpaw.domain.model.Mouse
+import com.catchpaw.domain.model.PawEffect
 
 data class PlayingUiState(
     val score: Int = 0,

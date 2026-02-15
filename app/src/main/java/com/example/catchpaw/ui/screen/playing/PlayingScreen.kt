@@ -1,4 +1,4 @@
-package com.example.catchpaw.ui.screen.playing
+package com.catchpaw.ui.screen.playing
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
@@ -46,19 +46,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.catchpaw.R
-import com.example.catchpaw.domain.model.GameResult
-import com.example.catchpaw.ui.component.GameTopBar
-import com.example.catchpaw.ui.component.GrassBackground
-import com.example.catchpaw.ui.component.BombItem
-import com.example.catchpaw.ui.component.ExplosionEffect
-import com.example.catchpaw.ui.component.MouseItem
-import com.example.catchpaw.ui.component.PawCatchEffect
-import com.example.catchpaw.ui.component.LanguageSelector
-import com.example.catchpaw.ui.component.ThemeSelector
-import com.example.catchpaw.ui.theme.LocalCatchPawColors
-import com.example.catchpaw.ui.theme.LocalLanguagePreference
-import com.example.catchpaw.ui.theme.LocalThemePreference
+import com.catchpaw.R
+import com.catchpaw.domain.model.GameResult
+import com.catchpaw.ui.component.GameTopBar
+import com.catchpaw.ui.component.GrassBackground
+import com.catchpaw.ui.component.BombItem
+import com.catchpaw.ui.component.ExplosionEffect
+import com.catchpaw.ui.component.MouseItem
+import com.catchpaw.ui.component.PawCatchEffect
+import com.catchpaw.ui.component.LanguageSelector
+import com.catchpaw.ui.component.ThemeSelector
+import com.catchpaw.ui.theme.LocalCatchPawColors
+import com.catchpaw.ui.theme.LocalLanguagePreference
+import com.catchpaw.ui.theme.LocalThemePreference
 
 @Composable
 fun PlayingScreen(

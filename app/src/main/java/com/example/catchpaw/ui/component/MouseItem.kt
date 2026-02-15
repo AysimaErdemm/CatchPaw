@@ -1,4 +1,4 @@
-package com.example.catchpaw.ui.component
+package com.catchpaw.ui.component
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -21,8 +21,8 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.catchpaw.domain.model.GameConfig
-import com.example.catchpaw.domain.model.Mouse
+import com.catchpaw.domain.model.GameConfig
+import com.catchpaw.domain.model.Mouse
 
 @Composable
 fun MouseItem(mouse: Mouse, onClick: () -> Unit) {

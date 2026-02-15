@@ -1,6 +1,6 @@
-package com.example.catchpaw.domain.engine
+package com.catchpaw.domain.engine
 
-import com.example.catchpaw.domain.model.GameConfig
+import com.catchpaw.domain.model.GameConfig
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue

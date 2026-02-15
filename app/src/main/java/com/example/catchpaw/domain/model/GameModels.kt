@@ -1,4 +1,4 @@
-package com.example.catchpaw.domain.model
+package com.catchpaw.domain.model
 
 data class Mouse(
     val id: Int,

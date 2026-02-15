@@ -1,11 +1,11 @@
-package com.example.catchpaw.data.di
+package com.catchpaw.data.di
 
 import android.content.Context
 import androidx.room.Room
-import com.example.catchpaw.data.local.CatchPawDatabase
-import com.example.catchpaw.data.local.GameScoreDao
-import com.example.catchpaw.data.repository.ScoreRepositoryImpl
-import com.example.catchpaw.domain.repository.ScoreRepository
+import com.catchpaw.data.local.CatchPawDatabase
+import com.catchpaw.data.local.GameScoreDao
+import com.catchpaw.data.repository.ScoreRepositoryImpl
+import com.catchpaw.domain.repository.ScoreRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides

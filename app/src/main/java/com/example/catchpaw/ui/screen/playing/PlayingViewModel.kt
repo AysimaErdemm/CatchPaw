@@ -1,14 +1,14 @@
-package com.example.catchpaw.ui.screen.playing
+package com.catchpaw.ui.screen.playing
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.catchpaw.domain.engine.GameEngine
-import com.example.catchpaw.domain.model.Bomb
-import com.example.catchpaw.domain.model.ExplosionEffect
-import com.example.catchpaw.domain.model.GameConfig
-import com.example.catchpaw.domain.model.Mouse
-import com.example.catchpaw.domain.model.PawEffect
-import com.example.catchpaw.domain.usecase.GetBestScoreUseCase
+import com.catchpaw.domain.engine.GameEngine
+import com.catchpaw.domain.model.Bomb
+import com.catchpaw.domain.model.ExplosionEffect
+import com.catchpaw.domain.model.GameConfig
+import com.catchpaw.domain.model.Mouse
+import com.catchpaw.domain.model.PawEffect
+import com.catchpaw.domain.usecase.GetBestScoreUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel

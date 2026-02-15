@@ -1,4 +1,4 @@
-package com.example.catchpaw.ui.screen.start
+package com.catchpaw.ui.screen.start
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -39,13 +39,13 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.catchpaw.R
-import com.example.catchpaw.ui.component.BannerAd
-import com.example.catchpaw.ui.component.LanguageSelector
-import com.example.catchpaw.ui.component.ThemeSelector
-import com.example.catchpaw.ui.theme.LocalCatchPawColors
-import com.example.catchpaw.ui.theme.LocalLanguagePreference
-import com.example.catchpaw.ui.theme.LocalThemePreference
+import com.catchpaw.R
+import com.catchpaw.ui.component.BannerAd
+import com.catchpaw.ui.component.LanguageSelector
+import com.catchpaw.ui.component.ThemeSelector
+import com.catchpaw.ui.theme.LocalCatchPawColors
+import com.catchpaw.ui.theme.LocalLanguagePreference
+import com.catchpaw.ui.theme.LocalThemePreference
 
 @Composable
 fun StartScreen(

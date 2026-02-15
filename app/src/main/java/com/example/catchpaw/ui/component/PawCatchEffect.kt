@@ -1,4 +1,4 @@
-package com.example.catchpaw.ui.component
+package com.catchpaw.ui.component
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -13,7 +13,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.sp
-import com.example.catchpaw.domain.model.PawEffect
+import com.catchpaw.domain.model.PawEffect
 import kotlinx.coroutines.delay
 
 @Composable

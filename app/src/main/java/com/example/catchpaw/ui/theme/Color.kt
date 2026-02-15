@@ -1,4 +1,4 @@
-package com.example.catchpaw.ui.theme
+package com.catchpaw.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

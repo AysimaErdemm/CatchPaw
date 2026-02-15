@@ -1,4 +1,4 @@
-package com.example.catchpaw.ui.component
+package com.catchpaw.ui.component
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
@@ -40,9 +40,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.catchpaw.R
-import com.example.catchpaw.domain.model.GameConfig
-import com.example.catchpaw.ui.theme.LocalCatchPawColors
+import com.catchpaw.R
+import com.catchpaw.domain.model.GameConfig
+import com.catchpaw.ui.theme.LocalCatchPawColors
 
 @Composable
 fun GameTopBar(

@@ -1,4 +1,4 @@
-package com.example.catchpaw.navigation
+package com.catchpaw.navigation
 
 sealed class Screen(val route: String) {
     data object Start : Screen("start")

@@ -1,4 +1,4 @@
-package com.example.catchpaw.ui.screen.gameover
+package com.catchpaw.ui.screen.gameover
 
 data class GameOverUiState(
     val score: Int = 0,

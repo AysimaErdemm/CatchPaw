@@ -1,4 +1,4 @@
-package com.example.catchpaw.navigation
+package com.catchpaw.navigation
 
 import androidx.navigation.NavHostController
 

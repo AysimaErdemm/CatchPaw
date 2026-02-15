@@ -1,6 +1,6 @@
-package com.example.catchpaw.domain.usecase
+package com.catchpaw.domain.usecase
 
-import com.example.catchpaw.domain.repository.ScoreRepository
+import com.catchpaw.domain.repository.ScoreRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

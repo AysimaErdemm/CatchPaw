@@ -1,4 +1,4 @@
-package com.example.catchpaw.ui.screen.gameover
+package com.catchpaw.ui.screen.gameover
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
@@ -35,9 +35,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.catchpaw.R
-import com.example.catchpaw.ui.component.BannerAd
-import com.example.catchpaw.ui.theme.LocalCatchPawColors
+import com.catchpaw.R
+import com.catchpaw.ui.component.BannerAd
+import com.catchpaw.ui.theme.LocalCatchPawColors
 
 @Composable
 fun GameOverScreen(

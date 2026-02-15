@@ -1,9 +1,9 @@
-package com.example.catchpaw.ui.screen.gameover
+package com.catchpaw.ui.screen.gameover
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.catchpaw.domain.usecase.SaveGameResultUseCase
+import com.catchpaw.domain.usecase.SaveGameResultUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

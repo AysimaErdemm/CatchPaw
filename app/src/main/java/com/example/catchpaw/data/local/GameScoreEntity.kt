@@ -1,4 +1,4 @@
-package com.example.catchpaw.data.local
+package com.catchpaw.data.local
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

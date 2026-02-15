@@ -1,9 +1,9 @@
-package com.example.catchpaw.domain.engine
+package com.catchpaw.domain.engine
 
-import com.example.catchpaw.domain.model.Bomb
-import com.example.catchpaw.domain.model.GameConfig
-import com.example.catchpaw.domain.model.GameResult
-import com.example.catchpaw.domain.model.Mouse
+import com.catchpaw.domain.model.Bomb
+import com.catchpaw.domain.model.GameConfig
+import com.catchpaw.domain.model.GameResult
+import com.catchpaw.domain.model.Mouse
 import kotlin.random.Random
 
 class GameEngine {

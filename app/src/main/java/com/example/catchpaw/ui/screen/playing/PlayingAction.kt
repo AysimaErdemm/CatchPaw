@@ -1,4 +1,4 @@
-package com.example.catchpaw.ui.screen.playing
+package com.catchpaw.ui.screen.playing
 
 sealed interface PlayingAction {
     data class SetContainerSize(val width: Float, val height: Float, val topBarHeightPx: Float) : PlayingAction

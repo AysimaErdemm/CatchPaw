@@ -1,4 +1,4 @@
-package com.example.catchpaw.ui.component
+package com.catchpaw.ui.component
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable

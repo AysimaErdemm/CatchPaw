@@ -1,4 +1,4 @@
-package com.example.catchpaw.navigation
+package com.catchpaw.navigation
 
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -12,9 +12,9 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.catchpaw.ui.screen.gameover.GameOverScreen
-import com.example.catchpaw.ui.screen.playing.PlayingScreen
-import com.example.catchpaw.ui.screen.start.StartScreen
+import com.catchpaw.ui.screen.gameover.GameOverScreen
+import com.catchpaw.ui.screen.playing.PlayingScreen
+import com.catchpaw.ui.screen.start.StartScreen
 
 @Composable
 fun CatchPawNavHost(navController: NavHostController) {

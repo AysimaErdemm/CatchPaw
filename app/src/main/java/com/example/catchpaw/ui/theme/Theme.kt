@@ -1,4 +1,4 @@
-package com.example.catchpaw.ui.theme
+package com.catchpaw.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -68,8 +68,8 @@ val DarkCatchPawColors = CatchPawColors(
 )
 
 val LocalCatchPawColors = staticCompositionLocalOf { LightCatchPawColors }
-val LocalThemePreference = staticCompositionLocalOf<com.example.catchpaw.data.local.ThemePreference?> { null }
-val LocalLanguagePreference = staticCompositionLocalOf<com.example.catchpaw.data.local.LanguagePreference?> { null }
+val LocalThemePreference = staticCompositionLocalOf<com.catchpaw.data.local.ThemePreference?> { null }
+val LocalLanguagePreference = staticCompositionLocalOf<com.catchpaw.data.local.LanguagePreference?> { null }
 
 private val DarkColorScheme = darkColorScheme(
     primary = Orange80,

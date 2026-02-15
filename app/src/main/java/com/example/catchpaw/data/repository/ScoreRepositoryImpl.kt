@@ -1,8 +1,8 @@
-package com.example.catchpaw.data.repository
+package com.catchpaw.data.repository
 
-import com.example.catchpaw.data.local.GameScoreDao
-import com.example.catchpaw.data.local.GameScoreEntity
-import com.example.catchpaw.domain.repository.ScoreRepository
+import com.catchpaw.data.local.GameScoreDao
+import com.catchpaw.data.local.GameScoreEntity
+import com.catchpaw.domain.repository.ScoreRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject

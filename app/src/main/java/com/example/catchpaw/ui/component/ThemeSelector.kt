@@ -1,4 +1,4 @@
-package com.example.catchpaw.ui.component
+package com.catchpaw.ui.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -14,8 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.catchpaw.data.local.ThemeMode
-import com.example.catchpaw.ui.theme.LocalCatchPawColors
+import com.catchpaw.data.local.ThemeMode
+import com.catchpaw.ui.theme.LocalCatchPawColors
 
 @Composable
 fun ThemeSelector(
