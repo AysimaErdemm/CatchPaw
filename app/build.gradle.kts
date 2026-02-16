@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.catchpaw"
+    namespace = "com.aysimaerdem.catchpaw"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.catchpaw"
+        applicationId = "com.aysimaerdem.catchpaw"
         minSdk = 36
         targetSdk = 36
         versionCode = 1

@@ -1,0 +1,59 @@
+package com.aysimaerdem.catchpaw.ui.component
+
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.aysimaerdem.catchpaw.data.local.ThemeMode
+import com.aysimaerdem.catchpaw.ui.theme.LocalCatchPawColors
+
+@Composable
+fun ThemeSelector(
+    currentMode: ThemeMode,
+    onModeSelected: (ThemeMode) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val colors = LocalCatchPawColors.current
+    val options = listOf(
+        ThemeMode.LIGHT to "☀️",
+        ThemeMode.DARK to "🌙"
+    )
+
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        options.forEach { (mode, label) ->
+            val isSelected = currentMode == mode
+            OutlinedButton(
+                onClick = { onModeSelected(mode) },
+                shape = RoundedCornerShape(12.dp),
+                border = BorderStroke(
+                    width = if (isSelected) 2.dp else 1.dp,
+                    color = if (isSelected) colors.pawOrange else colors.divider
+                ),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    containerColor = if (isSelected) colors.pawOrange.copy(alpha = 0.12f) else colors.cardBackground
+                ),
+                modifier = Modifier.weight(1f).height(44.dp)
+            ) {
+                Text(
+                    text = label,
+                    fontSize = 18.sp,
+                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                )
+            }
+        }
+    }
+}

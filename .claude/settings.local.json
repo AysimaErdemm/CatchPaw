@@ -5,7 +5,9 @@
       "Bash(./gradlew testDebugUnitTest:*)",
       "Bash(./gradlew assembleDebug:*)",
       "Bash(./gradlew clean:*)",
-      "Bash(adb logcat:*)"
+      "Bash(adb logcat:*)",
+      "Bash(find:*)",
+      "Bash(sips:*)"
     ]
   }
 }
