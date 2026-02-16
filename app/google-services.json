@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "362828879582",
+    "project_id": "paw-catch",
+    "storage_bucket": "paw-catch.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:362828879582:android:46c6371372410ef8d2544f",
+        "android_client_info": {
+          "package_name": "com.aysimaerdem.catchpaw"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAq4vtpafKgodykCdKow_vCYQW9CYpUSfM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
