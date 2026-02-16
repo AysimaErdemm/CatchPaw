@@ -77,7 +77,7 @@ jobs:
       - name: Build release bundle (AAB)
         run: ./gradlew bundleRelease
         env:
-          KEYSTORE_FILE: app/release-keystore.jks
+          KEYSTORE_FILE: release-keystore.jks
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
