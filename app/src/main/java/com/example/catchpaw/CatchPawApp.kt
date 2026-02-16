@@ -1,4 +1,4 @@
-package com.example.catchpaw
+package com.catchpaw
 
 import android.app.Application
 import com.google.android.gms.ads.MobileAds

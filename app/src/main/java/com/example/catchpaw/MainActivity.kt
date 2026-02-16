@@ -1,4 +1,4 @@
-package com.example.catchpaw
+package com.catchpaw
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
