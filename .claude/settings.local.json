@@ -7,7 +7,8 @@
       "Bash(./gradlew clean:*)",
       "Bash(adb logcat:*)",
       "Bash(find:*)",
-      "Bash(sips:*)"
+      "Bash(sips:*)",
+      "Bash(./gradlew tasks:*)"
     ]
   }
 }

@@ -20,5 +20,5 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "CatchPaw"
-include(":CatchPaw")
+include(":app")
  
