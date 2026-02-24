@@ -9,7 +9,9 @@
       "Bash(find:*)",
       "Bash(sips:*)",
       "Bash(./gradlew tasks:*)",
-      "Bash(keytool -list -keystore:*)"
+      "Bash(keytool -list -keystore:*)",
+      "Bash(gh run list:*)",
+      "Bash(brew list:*)"
     ]
   }
 }
