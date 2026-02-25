@@ -37,7 +37,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.window.Dialog
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.aysimaerdem.catchpaw.R
@@ -154,8 +156,11 @@ fun StartScreen(
         )
     }
 
+    val parentContext = LocalContext.current
+
     if (showSettings) {
         Dialog(onDismissRequest = { showSettings = false }) {
+            CompositionLocalProvider(LocalContext provides parentContext) {
             Card(
                 colors = CardDefaults.cardColors(containerColor = colors.cardBackground),
                 shape = RoundedCornerShape(24.dp),
@@ -193,7 +198,9 @@ fun StartScreen(
                     Spacer(modifier = Modifier.height(8.dp))
                     LanguageSelector(
                         currentLanguage = currentLanguage,
-                        onLanguageSelected = { langPref.setLanguage(it) }
+                        onLanguageSelected = { langPref.setLanguage(it) },
+                        turkishLabel = parentContext.getString(R.string.lang_turkish),
+                        englishLabel = parentContext.getString(R.string.lang_english)
                     )
                     Spacer(modifier = Modifier.height(20.dp))
                     Button(
@@ -208,6 +215,7 @@ fun StartScreen(
                         )
                     }
                 }
+            }
             }
         }
     }

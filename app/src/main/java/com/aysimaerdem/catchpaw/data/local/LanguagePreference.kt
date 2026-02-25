@@ -1,8 +1,7 @@
 package com.aysimaerdem.catchpaw.data.local
 
-import android.app.LocaleManager
 import android.content.Context
-import android.os.LocaleList
+import android.content.SharedPreferences
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,15 +18,14 @@ enum class AppLanguage(val tag: String) {
 class LanguagePreference @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
-    private val localeManager = context.getSystemService(LocaleManager::class.java)
+    private val prefs: SharedPreferences =
+        context.getSharedPreferences("catchpaw_prefs", Context.MODE_PRIVATE)
 
-    private val _language = MutableStateFlow(getCurrentLanguage())
+    private val _language = MutableStateFlow(getSavedLanguage())
     val language: StateFlow<AppLanguage> = _language.asStateFlow()
 
-    private fun getCurrentLanguage(): AppLanguage {
-        val appLocales = localeManager.applicationLocales
-        if (appLocales.isEmpty) return AppLanguage.TURKISH
-        val tag = appLocales.get(0)?.language ?: return AppLanguage.TURKISH
+    private fun getSavedLanguage(): AppLanguage {
+        val tag = prefs.getString("app_language", "tr") ?: "tr"
         return when (tag) {
             "en" -> AppLanguage.ENGLISH
             else -> AppLanguage.TURKISH
@@ -35,7 +33,7 @@ class LanguagePreference @Inject constructor(
     }
 
     fun setLanguage(lang: AppLanguage) {
-        localeManager.applicationLocales = LocaleList.forLanguageTags(lang.tag)
+        prefs.edit().putString("app_language", lang.tag).apply()
         _language.value = lang
     }
 }

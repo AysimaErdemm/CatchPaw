@@ -41,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -87,6 +88,8 @@ fun PlayingScreen(
             }
         }
     }
+
+    val localizedContext = LocalContext.current
 
     Box(modifier = Modifier.fillMaxSize()) {
         BoxWithConstraints(
@@ -231,7 +234,9 @@ fun PlayingScreen(
                             Spacer(modifier = Modifier.height(8.dp))
                             LanguageSelector(
                                 currentLanguage = currentLanguage,
-                                onLanguageSelected = { langPref.setLanguage(it) }
+                                onLanguageSelected = { langPref.setLanguage(it) },
+                                turkishLabel = localizedContext.getString(R.string.lang_turkish),
+                                englishLabel = localizedContext.getString(R.string.lang_english)
                             )
                             Spacer(modifier = Modifier.height(16.dp))
 
