@@ -1,12 +1,12 @@
 package com.aysimaerdem.catchpaw.domain.engine
 
-import com.aysimaerdem.catchpaw.domain.model.Bomb
-import com.aysimaerdem.catchpaw.domain.model.GameConfig
-import com.aysimaerdem.catchpaw.domain.model.GameResult
-import com.aysimaerdem.catchpaw.domain.model.Mouse
+import com.aysimaerdem.catchpaw.domain.model.*
 import kotlin.random.Random
 
-class GameEngine {
+class GameEngine(
+    private val random: Random = Random,
+    private val difficultyCap: Int = GameConfig.DIFFICULTY_SCORE_CAP
+) {
 
     var score: Int = 0
         private set
@@ -21,16 +21,16 @@ class GameEngine {
 
     private var mouseIdCounter: Int = 0
     private var bombIdCounter: Int = 0
+    private var powerUpIdCounter: Int = 0
 
-    /** 0 → 1 progress based on current score */
     fun difficultyProgress(): Float =
-        (score.toFloat() / GameConfig.DIFFICULTY_SCORE_CAP).coerceIn(0f, 1f)
+        (score.toFloat() / difficultyCap).coerceIn(0f, 1f)
 
-    fun onMouseCaught(currentTimeMs: Long): Int {
+    fun onMouseCaught(currentTimeMs: Long, basePoints: Int = 1): Int {
         combo = if (currentTimeMs - lastCatchTime < GameConfig.COMBO_WINDOW_MS) combo + 1 else 1
         if (combo > maxCombo) maxCombo = combo
         lastCatchTime = currentTimeMs
-        val points = if (combo > 1) combo else 1
+        val points = if (combo > 1) combo * basePoints else basePoints
         score += points
         return points
     }
@@ -42,26 +42,39 @@ class GameEngine {
 
     fun createMouse(containerWidth: Float, containerHeight: Float, topBarHeightPx: Float = GameConfig.TOP_BAR_HEIGHT): Mouse {
         val mouseSize = GameConfig.MOUSE_SIZE
+        val type = pickMouseType()
+        val lifetime = calculateMouseLifetime(type)
         return Mouse(
             id = mouseIdCounter++,
-            x = Random.nextFloat() * (containerWidth - mouseSize * 2) + mouseSize / 2,
-            y = topBarHeightPx + Random.nextFloat() * (containerHeight - topBarHeightPx - mouseSize * 2)
+            type = type,
+            x = random.nextFloat() * (containerWidth - mouseSize * 2) + mouseSize / 2,
+            y = topBarHeightPx + random.nextFloat() * (containerHeight - topBarHeightPx - mouseSize * 2),
+            spawnTimeMs = System.currentTimeMillis(),
+            lifetimeMs = lifetime
         )
     }
 
-    /** How long a mouse stays alive before it starts dying — gets shorter as score increases */
-    fun calculateMouseLifetime(): Long {
-        val p = difficultyProgress()
-        return lerp(GameConfig.EASY_MOUSE_LIFETIME_MS, GameConfig.HARD_MOUSE_LIFETIME_MS, p)
+    private fun pickMouseType(): MouseType {
+        val totalWeight = MouseType.entries.sumOf { it.spawnWeight }
+        var r = random.nextInt(totalWeight)
+        for (type in MouseType.entries) {
+            r -= type.spawnWeight
+            if (r < 0) return type
+        }
+        return MouseType.NORMAL
     }
 
-    /** Spawn delay between mice — gets shorter as score increases */
+    fun calculateMouseLifetime(type: MouseType = MouseType.NORMAL): Long {
+        val p = difficultyProgress()
+        val base = lerp(GameConfig.EASY_MOUSE_LIFETIME_MS, GameConfig.HARD_MOUSE_LIFETIME_MS, p)
+        return (base * type.lifetimeMultiplier).toLong()
+    }
+
     fun calculateSpawnInterval(): Long {
         val p = difficultyProgress()
         return lerp(GameConfig.EASY_SPAWN_INTERVAL_MS, GameConfig.HARD_SPAWN_INTERVAL_MS, p)
     }
 
-    /** Max simultaneous mice on screen — increases as score increases */
     fun calculateMaxMice(): Int {
         val p = difficultyProgress()
         return (GameConfig.EASY_MAX_MICE + p * (GameConfig.HARD_MAX_MICE - GameConfig.EASY_MAX_MICE)).toInt()
@@ -71,8 +84,9 @@ class GameEngine {
         val size = GameConfig.MOUSE_SIZE
         return Bomb(
             id = bombIdCounter++,
-            x = Random.nextFloat() * (containerWidth - size * 2) + size / 2,
-            y = topBarHeightPx + Random.nextFloat() * (containerHeight - topBarHeightPx - size * 2)
+            x = random.nextFloat() * (containerWidth - size * 2) + size / 2,
+            y = topBarHeightPx + random.nextFloat() * (containerHeight - topBarHeightPx - size * 2),
+            spawnTimeMs = System.currentTimeMillis()
         )
     }
 
@@ -80,7 +94,21 @@ class GameEngine {
         combo = 0
     }
 
-    fun shouldSpawnBomb(): Boolean = Random.nextFloat() < GameConfig.BOMB_SPAWN_CHANCE
+    fun shouldSpawnBomb(): Boolean = random.nextFloat() < GameConfig.BOMB_SPAWN_CHANCE
+
+    fun createPowerUp(containerWidth: Float, containerHeight: Float, topBarHeightPx: Float = GameConfig.TOP_BAR_HEIGHT): PowerUp {
+        val size = GameConfig.MOUSE_SIZE
+        val type = PowerUpType.entries[random.nextInt(PowerUpType.entries.size)]
+        return PowerUp(
+            id = powerUpIdCounter++,
+            type = type,
+            x = random.nextFloat() * (containerWidth - size * 2) + size / 2,
+            y = topBarHeightPx + random.nextFloat() * (containerHeight - topBarHeightPx - size * 2),
+            spawnTimeMs = System.currentTimeMillis()
+        )
+    }
+
+    fun shouldSpawnPowerUp(): Boolean = random.nextFloat() < GameConfig.POWER_UP_SPAWN_CHANCE
 
     fun buildGameResult(bestScore: Int): GameResult {
         val newBest = score > bestScore
@@ -102,6 +130,7 @@ class GameEngine {
         lastCatchTime = 0L
         mouseIdCounter = 0
         bombIdCounter = 0
+        powerUpIdCounter = 0
     }
 
     private fun lerp(start: Long, end: Long, fraction: Float): Long =

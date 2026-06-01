@@ -41,6 +41,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aysimaerdem.catchpaw.R
+import com.aysimaerdem.catchpaw.domain.model.ActivePowerUp
 import com.aysimaerdem.catchpaw.domain.model.GameConfig
 import com.aysimaerdem.catchpaw.ui.theme.LocalCatchPawColors
 
@@ -49,11 +50,13 @@ fun GameTopBar(
     score: Int,
     combo: Int,
     timeLeftMs: Long,
+    totalDurationMs: Long = GameConfig.GAME_DURATION_MS,
+    activePowerUps: List<ActivePowerUp> = emptyList(),
     onSettingsClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val colors = LocalCatchPawColors.current
-    val progress = timeLeftMs.toFloat() / GameConfig.GAME_DURATION_MS
+    val progress = if (totalDurationMs > 0) timeLeftMs.toFloat() / totalDurationMs else 0f
     val animatedProgress by animateFloatAsState(
         targetValue = progress,
         animationSpec = tween(200, easing = FastOutSlowInEasing),
@@ -113,14 +116,18 @@ fun GameTopBar(
                     }
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
+                    if (activePowerUps.isNotEmpty()) {
+                        activePowerUps.forEach { active ->
+                            Text(text = active.type.emoji, fontSize = 18.sp)
+                            Spacer(modifier = Modifier.width(2.dp))
+                        }
+                        Spacer(modifier = Modifier.width(4.dp))
+                    }
                     IconButton(
                         onClick = onSettingsClick,
                         modifier = Modifier.size(36.dp)
                     ) {
-                        Text(
-                            text = "⚙️",
-                            fontSize = 22.sp
-                        )
+                        Text(text = "⚙️", fontSize = 22.sp)
                     }
                     Spacer(modifier = Modifier.width(4.dp))
                     val timerColor by animateColorSafe(
@@ -137,11 +144,15 @@ fun GameTopBar(
             }
             Spacer(modifier = Modifier.height(8.dp))
             val progressBarColor by animateColorSafe(
-                targetValue = if (timeLeftMs < 5000) colors.timerRed else colors.progressTeal,
+                targetValue = when {
+                    timeLeftMs < 5000 -> colors.timerRed
+                    activePowerUps.any { it.type.emoji == "❄️" } -> Color(0xFF64B5F6)
+                    else -> colors.progressTeal
+                },
                 animationSpec = tween(500)
             )
             LinearProgressIndicator(
-                progress = { animatedProgress },
+                progress = { animatedProgress.coerceIn(0f, 1f) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(8.dp)

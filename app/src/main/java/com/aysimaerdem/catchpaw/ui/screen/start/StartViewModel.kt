@@ -2,6 +2,7 @@ package com.aysimaerdem.catchpaw.ui.screen.start
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aysimaerdem.catchpaw.data.local.ChallengePreference
 import com.aysimaerdem.catchpaw.domain.usecase.GetBestScoreUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +14,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class StartViewModel @Inject constructor(
-    getBestScore: GetBestScoreUseCase
+    getBestScore: GetBestScoreUseCase,
+    private val challengePreference: ChallengePreference
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(StartUiState())
@@ -22,7 +24,14 @@ class StartViewModel @Inject constructor(
     init {
         getBestScore()
             .onEach { best ->
-                _uiState.value = StartUiState(bestScore = best, isLoading = false)
+                _uiState.value = StartUiState(
+                    bestScore = best,
+                    isLoading = false,
+                    dailyBestScore = challengePreference.getDailyBestScore(),
+                    isDailyCompleted = challengePreference.isDailyCompleted(),
+                    weeklyTotalScore = challengePreference.getWeeklyTotalScore(),
+                    daysPlayedThisWeek = challengePreference.getDaysPlayedThisWeek()
+                )
             }
             .launchIn(viewModelScope)
     }

@@ -12,6 +12,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.aysimaerdem.catchpaw.domain.model.ChallengeMode
 import com.aysimaerdem.catchpaw.ui.screen.gameover.GameOverScreen
 import com.aysimaerdem.catchpaw.ui.screen.playing.PlayingScreen
 import com.aysimaerdem.catchpaw.ui.screen.start.StartScreen
@@ -32,13 +33,15 @@ fun CatchPawNavHost(navController: NavHostController) {
     ) {
         composable(Screen.Start.route) {
             StartScreen(
-                onStartGame = {
-                    navigator.navigateTo(Screen.Playing)
-                }
+                onStartGame = { navigator.navigateToPlaying(ChallengeMode.NORMAL) },
+                onStartDailyChallenge = { navigator.navigateToPlaying(ChallengeMode.DAILY) }
             )
         }
 
-        composable(Screen.Playing.route) {
+        composable(
+            route = Screen.Playing.route,
+            arguments = Screen.Playing.arguments
+        ) {
             PlayingScreen(
                 onGameOver = { result ->
                     navigator.navigateToGameOver(
@@ -64,12 +67,8 @@ fun CatchPawNavHost(navController: NavHostController) {
             )
         ) {
             GameOverScreen(
-                onPlayAgain = {
-                    navigator.navigateTo(Screen.Playing)
-                },
-                onMainMenu = {
-                    navigator.navigateTo(Screen.Start)
-                }
+                onPlayAgain = { navigator.navigateToPlaying(ChallengeMode.NORMAL) },
+                onMainMenu = { navigator.navigateTo(Screen.Start) }
             )
         }
     }

@@ -5,5 +5,6 @@ sealed interface PlayingAction {
     data class MouseClicked(val mouseId: Int) : PlayingAction
     data object TogglePause : PlayingAction
     data class BombClicked(val bombId: Int) : PlayingAction
+    data class PowerUpClicked(val powerUpId: Int) : PlayingAction
     data object Restart : PlayingAction
 }

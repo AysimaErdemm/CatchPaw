@@ -11,7 +11,9 @@
       "Bash(./gradlew tasks:*)",
       "Bash(keytool -list -keystore:*)",
       "Bash(gh run list:*)",
-      "Bash(brew list:*)"
+      "Bash(brew list:*)",
+      "Bash(./gradlew :app:testDebugUnitTest)",
+      "Bash(./gradlew :app:compileDebugKotlin)"
     ]
   }
 }

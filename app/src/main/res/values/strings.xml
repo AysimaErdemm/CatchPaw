@@ -7,6 +7,12 @@
     <string name="start_best_score">En Yüksek Skor: %d</string>
     <string name="start_play">🐾  Oyna!</string>
 
+    <!-- Challenge -->
+    <string name="challenge_daily">📅 Günlük</string>
+    <string name="challenge_play_today">1 hakkın var!</string>
+    <string name="challenge_weekly">🏅 Haftalık</string>
+    <string name="challenge_weekly_empty">Henüz oynanmadı</string>
+
     <!-- Settings -->
     <string name="settings_title">⚙️ Ayarlar</string>
     <string name="settings_theme">Tema</string>

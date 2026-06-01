@@ -7,6 +7,12 @@
     <string name="start_best_score">Best Score: %d</string>
     <string name="start_play">🐾  Play!</string>
 
+    <!-- Challenge -->
+    <string name="challenge_daily">📅 Daily</string>
+    <string name="challenge_play_today">1 shot today!</string>
+    <string name="challenge_weekly">🏅 Weekly</string>
+    <string name="challenge_weekly_empty">Not played yet</string>
+
     <!-- Settings -->
     <string name="settings_title">⚙️ Settings</string>
     <string name="settings_theme">Theme</string>

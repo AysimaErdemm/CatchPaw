@@ -1,5 +1,6 @@
 package com.aysimaerdem.catchpaw.ui.screen.playing
 
+import android.view.HapticFeedbackConstants
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
@@ -31,6 +32,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
@@ -43,6 +45,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -52,14 +55,16 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.aysimaerdem.catchpaw.R
 import com.aysimaerdem.catchpaw.domain.model.GameResult
-import com.aysimaerdem.catchpaw.ui.component.GameTopBar
-import com.aysimaerdem.catchpaw.ui.component.GrassBackground
 import com.aysimaerdem.catchpaw.ui.component.BombItem
 import com.aysimaerdem.catchpaw.ui.component.ExplosionEffect
+import com.aysimaerdem.catchpaw.ui.component.GameTopBar
+import com.aysimaerdem.catchpaw.ui.component.GrassBackground
+import com.aysimaerdem.catchpaw.ui.component.LanguageSelector
 import com.aysimaerdem.catchpaw.ui.component.MouseItem
 import com.aysimaerdem.catchpaw.ui.component.PawCatchEffect
-import com.aysimaerdem.catchpaw.ui.component.LanguageSelector
+import com.aysimaerdem.catchpaw.ui.component.PowerUpItem
 import com.aysimaerdem.catchpaw.ui.component.ThemeSelector
+import com.aysimaerdem.catchpaw.ui.sound.SoundManager
 import com.aysimaerdem.catchpaw.ui.theme.LocalCatchPawColors
 import com.aysimaerdem.catchpaw.ui.theme.LocalLanguagePreference
 import com.aysimaerdem.catchpaw.ui.theme.LocalThemePreference
@@ -81,10 +86,21 @@ fun PlayingScreen(
     val currentThemeMode by themePref!!.themeMode.collectAsStateWithLifecycle()
     val currentLanguage by langPref!!.language.collectAsStateWithLifecycle()
 
+    val soundManager = remember { SoundManager() }
+    DisposableEffect(Unit) { onDispose { soundManager.release() } }
+
+    val view = LocalView.current
+
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
             when (event) {
                 is PlayingUiEvent.GameOver -> onGameOver(event.result)
+                PlayingUiEvent.PlayCatchSound -> soundManager.playCatch()
+                PlayingUiEvent.PlayBonusCatchSound -> soundManager.playBonusCatch()
+                PlayingUiEvent.PlayBombSound -> soundManager.playBomb()
+                PlayingUiEvent.PlayPowerUpSound -> soundManager.playPowerUp()
+                PlayingUiEvent.VibrateLight -> view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                PlayingUiEvent.VibrateMedium -> view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
             }
         }
     }
@@ -119,6 +135,8 @@ fun PlayingScreen(
                 score = uiState.score,
                 combo = uiState.combo,
                 timeLeftMs = uiState.timeLeftMs,
+                totalDurationMs = uiState.totalDurationMs,
+                activePowerUps = uiState.activePowerUps,
                 onSettingsClick = { viewModel.onAction(PlayingAction.TogglePause) },
                 modifier = Modifier
                     .align(Alignment.TopCenter)
@@ -130,18 +148,21 @@ fun PlayingScreen(
             uiState.mice.forEach { mouse ->
                 MouseItem(
                     mouse = mouse,
-                    onClick = {
-                        viewModel.onAction(PlayingAction.MouseClicked(mouse.id))
-                    }
+                    onClick = { viewModel.onAction(PlayingAction.MouseClicked(mouse.id)) }
                 )
             }
 
             uiState.bombs.forEach { bomb ->
                 BombItem(
                     bomb = bomb,
-                    onClick = {
-                        viewModel.onAction(PlayingAction.BombClicked(bomb.id))
-                    }
+                    onClick = { viewModel.onAction(PlayingAction.BombClicked(bomb.id)) }
+                )
+            }
+
+            uiState.powerUps.forEach { powerUp ->
+                PowerUpItem(
+                    powerUp = powerUp,
+                    onClick = { viewModel.onAction(PlayingAction.PowerUpClicked(powerUp.id)) }
                 )
             }
 
@@ -154,7 +175,6 @@ fun PlayingScreen(
             }
         }
 
-        // Pause overlay
         AnimatedVisibility(
             visible = uiState.isPaused,
             enter = fadeIn(),
